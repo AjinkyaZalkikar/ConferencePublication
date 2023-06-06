@@ -1,2 +1,3 @@
 # ConferencePublication
 This repository contains the data related to the conference paper presented at RAMS 2022 (Reliability and Maintainability Symposium) in applications of Machine Learning in reliability engineering.
+The PDF file is the paper manuscript that was published at the RAMS 2022 Conference held in Tucson, Arizona, United States in January 2022. This project is based on applications of Machine Learning and involves utilizing various classification algorithms like Support Vector Machines, Random Forests, Decision Trees, Discriminant Analysis, and Logistic Regression to determine the vulnerability of the pipeline under fluid hammer pressure surge. An extension of this project can be found in the 'JournalPublication' repository on my profile.
