@@ -1,0 +1,317 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+```{r}
+setwd("C:/ALL FILES/ISEN/SPRING 21/Research Project/1. Fluid Hammer Effect Project/Review Meeting Presentations")
+library(ISLR)
+library(MASS)
+set.seed(1)
+dataset=read.csv(file="DOE_V3.csv")
+attach(dataset)
+train=sample(5400,2700)
+test=dataset[-train,]
+test_y=Safety_Status[-train]
+
+cor(flow,velo)
+cor(flow,dia)
+cor(flow,t)
+cor(flow,material)
+cor(velo,dia)
+cor(velo,t)
+cor(velo,material)
+cor(dia,t)
+cor(dia,material)
+cor(t,material)
+
+#logreg=glm(Safety_Status~flow+velo+dia+t+material, data = dataset, family = binomial, subset = train)
+
+#LDA Analysis - 2 Vars
+set.seed(1)
+lda.fit=lda(Safety_Status~flow+dia,data=dataset, subset = train)
+
+#LDA Results
+summary(lda.fit)
+lda.fit
+plot(lda.fit)
+lda.pred=predict(lda.fit,test)
+table.lda=table(test_y,lda.pred$class)
+ldaaccuracy=sum(diag(table.lda))/sum(table.lda)
+ldaaccuracy
+
+
+#LDA Analysis - 3 Vars
+set.seed(1)
+lda.fit=lda(Safety_Status~flow+dia+material,data=dataset, subset = train)
+
+#LDA Results
+summary(lda.fit)
+lda.fit
+plot(lda.fit)
+lda.pred=predict(lda.fit,test)
+table.lda=table(test_y,lda.pred$class)
+ldaaccuracy=sum(diag(table.lda))/sum(table.lda)
+ldaaccuracy
+
+#LDA Analysis - 4 Vars
+set.seed(1)
+lda.fit=lda(Safety_Status~flow+velo+dia+material,data=dataset, subset = train)
+
+#LDA Results
+summary(lda.fit)
+lda.fit
+plot(lda.fit)
+lda.pred=predict(lda.fit,test)
+table.lda=table(test_y,lda.pred$class)
+ldaaccuracy=sum(diag(table.lda))/sum(table.lda)
+ldaaccuracy
+
+#LDA Analysis - 5 Vars
+set.seed(1)
+lda.fit=lda(Safety_Status~flow+velo+dia+t+material,data=dataset, subset = train)
+
+#LDA Results
+summary(lda.fit)
+lda.fit
+plot(lda.fit)
+lda.pred=predict(lda.fit,test)
+table.lda=table(test_y,lda.pred$class)
+ldaaccuracy=sum(diag(table.lda))/sum(table.lda)
+ldaaccuracy
+
+#Decision Trees
+
+#5 Variables
+
+set.seed(1)
+library(rpart.plot)
+treefit=rpart(Safety_Status~flow+velo+dia+t+material,data=dataset,subset=train, method='class')
+rpart.plot(treefit,extra=104)
+predict.tree=predict(treefit, data=test, type='class')
+tabletree=table(test_y,predict.tree)
+treeaccuracy=sum(diag(tabletree))/sum(tabletree)
+treeaccuracy
+
+#4 Variables
+
+set.seed(1)
+library(rpart.plot)
+treefit=rpart(Safety_Status~flow+velo+dia+material,data=dataset,subset=train, method='class')
+rpart.plot(treefit,extra=104)
+predict.tree=predict(treefit, data=test, type='class')
+tabletree=table(test_y,predict.tree)
+treeaccuracy=sum(diag(tabletree))/sum(tabletree)
+treeaccuracy
+
+#3 Variables
+
+set.seed(1)
+library(rpart.plot)
+treefit=rpart(Safety_Status~flow+dia+material,data=dataset,subset=train, method='class')
+rpart.plot(treefit,extra=104)
+predict.tree=predict(treefit, data=test, type='class')
+tabletree=table(test_y,predict.tree)
+treeaccuracy=sum(diag(tabletree))/sum(tabletree)
+treeaccuracy
+
+#2 Variables
+
+set.seed(1)
+library(rpart.plot)
+treefit=rpart(Safety_Status~flow+dia,data=dataset,subset=train, method='class')
+rpart.plot(treefit,extra=104)
+predict.tree=predict(treefit, data=test, type='class')
+tabletree=table(test_y,predict.tree)
+treeaccuracy=sum(diag(tabletree))/sum(tabletree)
+treeaccuracy
+
+#randomforest(bagging)
+
+#5 Variables
+set.seed(1)
+library(randomForest)
+bagtree=randomForest(as.factor(Safety_Status)~flow+velo+dia+t+material,data=dataset,subset=train,mtry=5,importance=TRUE)
+bagtree
+predictrf=predict(bagtree,newdata=test)
+table.rf=table(test_y,predictrf)
+table.rf
+rfaccuracy=sum(diag(table.rf))/sum(table.rf)
+rfaccuracy
+
+#4 Variables
+set.seed(1)
+library(randomForest)
+bagtree=randomForest(as.factor(Safety_Status)~flow+velo+dia+material,data=dataset,subset=train,mtry=4,importance=TRUE)
+bagtree
+predictrf=predict(bagtree,newdata=test)
+table.rf=table(test_y,predictrf)
+table.rf
+rfaccuracy=sum(diag(table.rf))/sum(table.rf)
+rfaccuracy
+
+#3 Variables
+set.seed(1)
+library(randomForest)
+bagtree=randomForest(as.factor(Safety_Status)~flow+dia+material,data=dataset,subset=train,mtry=5,importance=TRUE)
+bagtree
+predictrf=predict(bagtree,newdata=test)
+table.rf=table(test_y,predictrf)
+table.rf
+rfaccuracy=sum(diag(table.rf))/sum(table.rf)
+rfaccuracy
+
+#2 Variables
+set.seed(1)
+library(randomForest)
+bagtree=randomForest(as.factor(Safety_Status)~flow+dia,data=dataset,subset=train,mtry=5,importance=TRUE)
+bagtree
+predictrf=predict(bagtree,newdata=test)
+table.rf=table(test_y,predictrf)
+table.rf
+rfaccuracy=sum(diag(table.rf))/sum(table.rf)
+rfaccuracy
+
+#SVM Radial 
+
+#5 Variables
+library(e1071)
+set.seed(1)
+tune.out=tune(svm, as.factor(Safety_Status)~dia+flow+velo+t+material,data=dataset[train,],kernel="radial",ranges=list(cost=c(0.1,1,10,100,1000),gamma=c(0.5,1,2,3,4,5)))
+summary(tune.out)
+
+library(e1071)
+svmfit=svm(as.factor(Safety_Status)~flow+dia+t+velo+material,data = dataset, subset= train, kernel='radial', cost=1000, gamma = 2)
+svmfit
+summary(svmfit)
+svmpred=predict(svmfit,test)
+table.svm=table(predict=svmpred,truth=test_y)
+table.svm
+svmaccuracy=sum(diag(table.svm))/sum(table.svm)
+svmaccuracy
+
+#4 Variables
+set.seed(1)
+tune.out=tune(svm, as.factor(Safety_Status)~dia+flow+velo+material,data=dataset[train,],kernel="radial",ranges=list(cost=c(0.1,1,10,100,1000),gamma=c(0.5,1,2,3,4,5)))
+summary(tune.out)
+
+set.seed(1)
+library(e1071)
+svmfit=svm(as.factor(Safety_Status)~flow+dia+velo+material,data = dataset, subset= train, kernel='radial', cost=1000, gamma = 2)
+svmfit
+summary(svmfit)
+svmpred=predict(svmfit,test)
+table.svm=table(predict=svmpred,truth=test_y)
+table.svm
+svmaccuracy=sum(diag(table.svm))/sum(table.svm)
+svmaccuracy
+
+#3 Variables
+set.seed(1)
+tune.out=tune(svm, as.factor(Safety_Status)~dia+flow+material,data=dataset[train,],kernel="radial",ranges=list(cost=c(0.1,1,10,100,1000),gamma=c(0.5,1,2,3,4,5)))
+summary(tune.out)
+
+set.seed(1)
+library(e1071)
+svmfit=svm(as.factor(Safety_Status)~flow+dia+material,data = dataset, subset= train, kernel='radial', cost=1000, gamma = 4)
+svmfit
+summary(svmfit)
+svmpred=predict(svmfit,test)
+table.svm=table(predict=svmpred,truth=test_y)
+table.svm
+svmaccuracy=sum(diag(table.svm))/sum(table.svm)
+svmaccuracy
+
+#2 Variables
+set.seed(1)
+tune.out=tune(svm, as.factor(Safety_Status)~dia+flow,data=dataset[train,],kernel="radial",ranges=list(cost=c(0.1,1,10,100,1000),gamma=c(0.5,1,2,3,4,5)))
+summary(tune.out)
+
+set.seed(1)
+library(e1071)
+svmfit=svm(as.factor(Safety_Status)~flow+dia,data = dataset, subset= train, kernel='radial', cost=0.1, gamma = 0.5)
+svmfit
+summary(svmfit)
+svmpred=predict(svmfit,test)
+table.svm=table(predict=svmpred,truth=test_y)
+table.svm
+svmaccuracy=sum(diag(table.svm))/sum(table.svm)
+svmaccuracy
+
+#SVM Polynomial
+
+#5 Variables
+set.seed(1)
+tune.out=tune(svm, as.factor(Safety_Status)~dia+flow+velo+t+material,data=dataset[train,],kernel="polynomial",ranges=list(cost=c(0.1,1,10,100,1000),d=c(1,2,3,4,5,6)))
+summary(tune.out)
+
+library(e1071)
+svmfit=svm(as.factor(Safety_Status)~flow+dia+t+velo+material,data = dataset, subset= train, kernel='polynomial', cost=1000, d = 3)
+svmfit
+summary(svmfit)
+svmpred=predict(svmfit,test)
+table.svm=table(predict=svmpred,truth=test_y)
+table.svm
+svmaccuracy=sum(diag(table.svm))/sum(table.svm)
+svmaccuracy
+
+#4 Variables
+set.seed(1)
+tune.out=tune(svm, as.factor(Safety_Status)~dia+flow+velo+material,data=dataset[train,],kernel="polynomial",ranges=list(cost=c(0.1,1,10,100,1000),d=c(1,2,3,4,5,6)))
+summary(tune.out)
+
+library(e1071)
+svmfit=svm(as.factor(Safety_Status)~flow+dia+velo+material,data = dataset, subset= train, kernel='polynomial', cost=1000, d = 5)
+svmfit
+summary(svmfit)
+svmpred=predict(svmfit,test)
+table.svm=table(predict=svmpred,truth=test_y)
+table.svm
+svmaccuracy=sum(diag(table.svm))/sum(table.svm)
+svmaccuracy
+
+#3 Variables
+set.seed(1)
+tune.out=tune(svm, as.factor(Safety_Status)~dia+flow+material,data=dataset[train,],kernel="polynomial",ranges=list(cost=c(0.1,1,10,100,1000),d=c(1,2,3,4,5,6)))
+summary(tune.out)
+
+library(e1071)
+svmfit=svm(as.factor(Safety_Status)~flow+dia+material,data = dataset, subset= train, kernel='polynomial', cost=1000, d = 5)
+svmfit
+summary(svmfit)
+svmpred=predict(svmfit,test)
+table.svm=table(predict=svmpred,truth=test_y)
+table.svm
+svmaccuracy=sum(diag(table.svm))/sum(table.svm)
+svmaccuracy
+
+#2 Variables
+set.seed(1)
+tune.out=tune(svm, as.factor(Safety_Status)~dia+flow,data=dataset[train,],kernel="polynomial",ranges=list(cost=c(0.1,1,10,100,1000),d=c(1,2,3,4,5,6)))
+summary(tune.out)
+
+library(e1071)
+svmfit=svm(as.factor(Safety_Status)~flow+dia,data = dataset, subset= train, kernel='polynomial', cost=100, d = 3)
+svmfit
+summary(svmfit)
+svmpred=predict(svmfit,test)
+table.svm=table(predict=svmpred,truth=test_y)
+table.svm
+svmaccuracy=sum(diag(table.svm))/sum(table.svm)
+svmaccuracy
+
+set.seed(1)
+tune.out=tune(svm, as.factor(Safety_Status)~material+flow,data=dataset[train,],kernel="polynomial",ranges=list(cost=c(0.1,1,10,100,1000),d=c(1,2,3,4,5,6)))
+summary(tune.out)
+
+
+library(e1071)
+svmfit=svm(as.factor(Safety_Status)~flow+material,data = dataset, subset= train, kernel='polynomial', cost=0.1, d = 1)
+svmfit
+summary(svmfit)
+svmpred=predict(svmfit,test)
+table.svm=table(predict=svmpred,truth=test_y)
+table.svm
+svmaccuracy=sum(diag(table.svm))/sum(table.svm)
+svmaccuracy
+```
